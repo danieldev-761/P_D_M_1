@@ -143,12 +143,25 @@ while active == 1:
                 
                     new_status= "active" if status== 1 else "inactive"
                     
+                    if new_name is None:
+                        new_name = found_student["name"]
+
+                    if new_age is None:
+                        new_age = found_student["age"]
+
+                    if new_course is None:
+                        new_course = found_student["course"]
+
+                    if new_status is None:
+                        new_status = found_student["status"]
+
+                    
+
                     
                     #call the function to update the student and show a success message
                     if update_students(students, new_name, new_age, new_course, new_status):
                         print(f"student updated successfully.\n")
-                        break
-                        
+                
                 else:
                     print(f"student not found in the students list\n")
 

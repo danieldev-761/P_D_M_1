@@ -1,7 +1,10 @@
 from services import *
 
 
+#flag to track unsaved changes
+unsaved_changes= False
 
+#initialize students list 
 students= []
 
 print("Hi. Welcome to our Student Management System! \n")
@@ -17,7 +20,7 @@ while active == 1:
 
     1. Add new students.
     2. Show all students.
-    3. Search only one student by criteria (e.g. ID or name).
+    3. Search only one student by criteria (e.g., ID or name).
     4. Update the information about a student.
     5. Delete students 
     6. Exit      \n""")
@@ -29,20 +32,132 @@ while active == 1:
     match option:
 
         case "1":
-            print(f"{'-'*20} STUDENT ADDITION MODULE {'-'*20}")
+
+            keep_adding= 1
+
+            while keep_adding == 1:
+
+                print(f"{'-'*20} STUDENT ADDITION MODULE {'-'*20}")
+
+                
+                ID= validate_input("Enter a valid student ID: ", 
+                                    int,  
+                                    lambda x: x >= 0 and x not in [student['ID'] for student in students], 
+                                    "Error:  Student ID cannot be negative, empty or already existing. Please enter a valid ID.")
+
+                name= validate_input("Enter the student name: ", 
+                                    str, 
+                                    lambda x: x.strip() != "" and not x.isdigit(), 
+                                    "Error: Student name cannot be empty or only digit. Please enter a valid name.").capitalize()
+                
+                age= validate_input("Enter a valid student age: ", 
+                                    int,  
+                                    lambda x: x >= 5, 
+                                    "Error:  Age cannot be negative or empty. Please enter a valid ID.")
+                
+                course= validate_input("Enter the student course/program: ", 
+                                    str, 
+                                    lambda x: x.strip() != "" and not x.isdigit(), 
+                                    "Error: Student course cannot be empty or only digit. Please enter a valid course.").capitalize()
+                
+                status= validate_input("Enter the student status (active= True /inactive = False): ", 
+                                    str, 
+                                    lambda x: str(x).lower() in ['true', 'false'],
+                                    "Error: Student status cannot be empty or different from 'true' or 'false'. Please enter a valid status.").capitalize()
+                
+
+                add_students(students, ID, name, age, course, status)
+
+                unsaved_changes = True
+
+                print(f"Student with ID: '{ID}' | Name: '{name}' added successfully. \n") 
+                
+                
+                
+                # ask the user if they want to keep adding students, if they choose to continue
+                keep_adding= (input("Do you want to continue adding students? (1 for Yes, another number or char for No): "))
+                keep_adding= int(keep_adding) if keep_adding.isdigit() else 0
+                
+                print("You chose continue adding another student \n") if keep_adding==1 else print("Returning to the main menu... \n")
+
 
 
         case "2":
             print(f"{'-'*20} STUDENT DISPLAY MODULE {'-'*20}")
 
+            result= show_students(students)
+
+            print(result)
+
         case "3":
             print(f"{'-'*20} STUDENT SEARCH MODULE {'-'*20}")
 
+            #call the function to search the student and store the result in a variable
+            found_student = search_students(students)
+            
+            #show a message personlized depending on the result of the search
+            if found_student:
+                print(f"Student found: Name: {found_student['ID']} | Name: {found_student['name']} | Age: {found_student['age']} | Course/Program: {found_student['course']} | Status: {found_student['status']}\n")      
+                
         case "4":
             print(f"{'-'*20} STUDENT UPDATE MODULE {'-'*20}")
 
+            if not students:
+                print("The students list is currently empty. No students to update.\n")
+    
+            else: 
+
+                #call the function to search the student and store the result in a variable
+                found_student = search_students(students)
+                
+                #show a message personalized depending on the result of the search
+                if found_student:
+                    print(f"Student found: Name: {found_student['ID']} | Name: {found_student['name']} | Age: {found_student['age']} | Course/Program: {found_student['course']} | Status {found_student['status']}\n")
+                    
+                    #ask for new optional items to update
+                    new_name= validate_input("Enter the student name: ", 
+                                        str, 
+                                        lambda x: x.strip() != "" and not x.isdigit(), 
+                                        "Error: Student name cannot be empty or only digit. Please enter a valid name.").capitalize()
+                    
+                    new_age= validate_input("Enter a valid student age: ", 
+                                        int,  
+                                        lambda x: x >= 5, 
+                                        "Error:  Age cannot be negative or empty. Please enter a valid ID.")
+                    
+                    new_course= validate_input("Enter the student course/program: ", 
+                                        str, 
+                                        lambda x: x.strip() != "" and not x.isdigit(), 
+                                        "Error: Student course cannot be empty or only digit. Please enter a valid course.").capitalize()
+                    
+                    new_status= validate_input("Enter the student status (active= true / inactive = false): ", 
+                                        str, 
+                                        lambda x: str(x).lower() in ['true', 'false'], 
+                                        "Error: Student status cannot be empty. Please enter a valid status.").capitalize()
+                    
+                    #call the function to update the student and show a success message
+                    if update_students(students, new_name, new_age, new_course, new_status):
+                        unsaved_changes = True
+                        print(f"student updated successfully.\n")
+                        
+                else:
+                    print(f"student not found in the students list\n")
+
         case "5":
             print(f"{'-'*20} STUDENT DROP MODULE {'-'*20}")
+
+            if not students:
+                print("The students list is currently empty. No students to delete.\n")
+
+            else:
+                #call the function to delete the student and show a message personalized depending on the result
+                if delete_students(students):
+                    search_input= search_input
+                    unsaved_changes = True
+                    print(f"student '{search_input}' deleted successfully from the students list.\n")
+                else:
+                    print(f"student '{search_input}' not found in the the students list. No deletion performed.\n")
+        
 
         case "6":
             print("Thank you for using the program. Exiting...")

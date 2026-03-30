@@ -1,9 +1,6 @@
 from services import *
 
 
-#flag to track unsaved changes
-unsaved_changes= False
-
 #initialize students list 
 students= []
 
@@ -11,7 +8,7 @@ print("Hi. Welcome to our Student Management System! \n")
 
 active= 1
 
-
+#main menu loop: while active is 1, the menu will keep showing, if the user chooses to exit, it will change to 0 and the loop will end    
 while active == 1:
 
 
@@ -67,8 +64,6 @@ while active == 1:
                 
                 status= "active" if status== 1 else "inactive"
                 add_students(students, ID, name, age, course, status)
-
-                unsaved_changes = True
 
                 print(f"Student with ID: '{ID}' | Name: '{name}' added successfully. \n") 
                 
@@ -151,7 +146,6 @@ while active == 1:
                     
                     #call the function to update the student and show a success message
                     if update_students(students, new_name, new_age, new_course, new_status):
-                        unsaved_changes = True
                         print(f"student updated successfully.\n")
                         break
                         
@@ -165,12 +159,15 @@ while active == 1:
                 print("The students list is currently empty. No students to delete.\n")
 
             else:
+
+                #validate the input for student name, if the input is invalid, show an error message and ask for input again
+                search_input = validate_input("Enter the student name or ID to delete: ", str, lambda x: x.strip() != "", "Error: student name or ID cannot be empty. Please enter a valid input.").capitalize()
+
                 #call the function to delete the student and show a message personalized depending on the result
-                if delete_students(students):
-                    unsaved_changes = True
-                    print(f"student deleted successfully from the students list.\n")
+                if delete_students(students, search_input):
+                    print(f"student {search_input} deleted successfully from the students list.\n")
                 else:
-                    print(f"student not found in the the students list. No deletion performed.\n")
+                    print(f"student {search_input} not found in the the students list. No deletion performed.\n")
         
 
         case "6":
@@ -180,7 +177,7 @@ while active == 1:
         case _:
             print("Invalid option. Please input a valid one (1-6). \n")
 
- 
+
 
         
 

@@ -155,7 +155,7 @@ def update_students(students, new_name= None, new_age=None, new_course=None, new
     return False
 
 # Function to delete a student by name
-def delete_students(students):
+def delete_students(students, search_input):
 
 
     """
@@ -168,21 +168,13 @@ def delete_students(students):
     Returns:
     bool: True if the student was removed, False if not found.
     """
-    #validate the input for student name, if the input is invalid, show an error message and ask for input again
-    search_input = validate_input("Enter the student name or ID to delete: ", str, lambda x: x.strip() != "", "Error: student name or ID cannot be empty. Please enter a valid input.").capitalize()
-
+    
     
     for i, student in enumerate(students):
-        if student['name'] == search_input or student['ID'] == search_input:
-
-            confirm= input("Are you completely sure about? Once you delete a student, all their information will be lost: (Y/N)").strip().upper()
-
-            if confirm == "Y":
-
-                del students[i]
-                return True
-            
+        if student['name'] == search_input or student['ID'] == int(search_input):
+            del students[i]
+            return True
+        else:        
             return False
-    return False
 
 

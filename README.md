@@ -77,7 +77,7 @@ Other:
 - LICENSE
 - .gitignore
 
-## GitHub: https://github.com/danieldev-761/P_D_M_1/t
+## GitHub: https://github.com/danieldev-761/P_D_M_1/
 
 ## Author
 

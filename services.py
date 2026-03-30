@@ -99,6 +99,8 @@ def search_students(students):
     
     #input (str): The name or ID of the student to search for.
     #validate the input for student name or ID, if the input is invalid, show an error message and ask for input again
+
+    found= False
     search_input = validate_input("Enter the student name or ID to search: ", 
                             str, 
                             lambda x: x.strip() != "", 
@@ -106,12 +108,13 @@ def search_students(students):
     
     
     for student in students:
-        if student['name'] == search_input:
-            return student, search_input
-        elif str(student['ID']) == search_input:
-            return student, search_input
-        else:
-            print(f"Student '{search_input}' not found in the inventory.\n")
+        if student['name'] == search_input or str(student['ID']) == search_input:
+            found= True
+            return student
+        
+        
+    if not found:
+        print(f"Student '{search_input}' not found in the inventory.\n")
             
 
     return False
@@ -177,9 +180,9 @@ def delete_students(students):
             if confirm == "Y":
 
                 del students[i]
-                return True, search_input
+                return True
             
-            return False, search_input
+            return False
     return False
 
 

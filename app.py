@@ -60,12 +60,12 @@ while active == 1:
                                     lambda x: x.strip() != "" and not x.isdigit(), 
                                     "Error: Student course cannot be empty or only digit. Please enter a valid course.").capitalize()
                 
-                status= validate_input("Enter the student status (active= True /inactive = False): ", 
-                                    str, 
-                                    lambda x: str(x).lower() in ['true', 'false'],
-                                    "Error: Student status cannot be empty or different from 'true' or 'false'. Please enter a valid status.").capitalize()
+                status= validate_input("Enter the student status (active= 1 /inactive = 0): ", 
+                                    int, 
+                                    lambda x: x == 0 or x==1,
+                                    "Error: Student status cannot be empty or out of range (only 0-1). Please enter a valid status.")
                 
-
+                status= "active" if status== 1 else "inactive"
                 add_students(students, ID, name, age, course, status)
 
                 unsaved_changes = True
@@ -97,7 +97,7 @@ while active == 1:
             
             #show a message personlized depending on the result of the search
             if found_student:
-                print(f"Student found: Name: {found_student['ID']} | Name: {found_student['name']} | Age: {found_student['age']} | Course/Program: {found_student['course']} | Status: {found_student['status']}\n")      
+                print(f"Student found: ID: {found_student['ID']} | Name: {found_student['name']} | Age: {found_student['age']} | Course/Program: {found_student['course']} | Status: {found_student['status']}\n")      
                 
         case "4":
             print(f"{'-'*20} STUDENT UPDATE MODULE {'-'*20}")
@@ -112,33 +112,48 @@ while active == 1:
                 
                 #show a message personalized depending on the result of the search
                 if found_student:
-                    print(f"Student found: Name: {found_student['ID']} | Name: {found_student['name']} | Age: {found_student['age']} | Course/Program: {found_student['course']} | Status {found_student['status']}\n")
+                    print(f"Student found: ID: {found_student['ID']} | Name: {found_student['name']} | Age: {found_student['age']} | Course/Program: {found_student['course']} | Status {found_student['status']}\n")
                     
                     #ask for new optional items to update
                     new_name= validate_input("Enter the student name: ", 
                                         str, 
                                         lambda x: x.strip() != "" and not x.isdigit(), 
-                                        "Error: Student name cannot be empty or only digit. Please enter a valid name.").capitalize()
+                                        "Error: Student name cannot be empty or only digit. Please enter a valid name.",
+                                        allow_empty=True)
+                    
+                    new_name= new_name.capitalize() if new_name != None else None
                     
                     new_age= validate_input("Enter a valid student age: ", 
                                         int,  
                                         lambda x: x >= 5, 
-                                        "Error:  Age cannot be negative or empty. Please enter a valid ID.")
+                                        "Error:  Age cannot be negative or empty. Please enter a valid ID.",
+                                        allow_empty=True)
+                    
+                    
                     
                     new_course= validate_input("Enter the student course/program: ", 
                                         str, 
                                         lambda x: x.strip() != "" and not x.isdigit(), 
-                                        "Error: Student course cannot be empty or only digit. Please enter a valid course.").capitalize()
+                                        "Error: Student course cannot be empty or only digit. Please enter a valid course.",
+                                        allow_empty=True)
                     
-                    new_status= validate_input("Enter the student status (active= true / inactive = false): ", 
-                                        str, 
-                                        lambda x: str(x).lower() in ['true', 'false'], 
-                                        "Error: Student status cannot be empty. Please enter a valid status.").capitalize()
+                    new_course= new_course.capitalize() if new_course != None else None
+                    
+                    
+                    new_status= validate_input("Enter the student status (active= 1 /inactive = 0): ", 
+                                    int, 
+                                    lambda x: x == 0 or x==1,
+                                    "Error: Student status cannot be empty or out of range (only 0-1). Please enter a valid status.",
+                                    allow_empty= True)
+                
+                    new_status= "active" if status== 1 else "inactive"
+                    
                     
                     #call the function to update the student and show a success message
                     if update_students(students, new_name, new_age, new_course, new_status):
                         unsaved_changes = True
                         print(f"student updated successfully.\n")
+                        break
                         
                 else:
                     print(f"student not found in the students list\n")
@@ -152,11 +167,10 @@ while active == 1:
             else:
                 #call the function to delete the student and show a message personalized depending on the result
                 if delete_students(students):
-                    search_input= search_input
                     unsaved_changes = True
-                    print(f"student '{search_input}' deleted successfully from the students list.\n")
+                    print(f"student deleted successfully from the students list.\n")
                 else:
-                    print(f"student '{search_input}' not found in the the students list. No deletion performed.\n")
+                    print(f"student not found in the the students list. No deletion performed.\n")
         
 
         case "6":
@@ -166,9 +180,9 @@ while active == 1:
         case _:
             print("Invalid option. Please input a valid one (1-6). \n")
 
+ 
 
-
-    
+        
 
 
 
